@@ -1,23 +1,17 @@
-import asyncio
-import sys
-
-if sys.platform == "win32":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
 from typing import Dict
-from chainlit as cl
-# from dotenv import load_dotenv
-from langchain_classic.agents import AgentExecuter , create_tool_calling_agent
+import chainlit as cl
+from dotenv import load_dotenv
+from langchain_classic.agents import AgentExecutor , create_tool_calling_agent
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate ,MessagesPlaceholder
-from langchain_core.runnable import RunnableWithMessageHistory
-from langchain_core.tools import tools
+from langchain_core.runnables import RunnableWithMessageHistory
+from langchain_core.tools import tool
 from langchain_groq import ChatGroq
-import nest_asyncio
+# import nest_asyncio
 
 load_dotenv()
-nest_asyncio.apply()
+# nest_asyncio.apply()
 
 _store: Dict[str , InMemoryChatMessageHistory] = {}
 
@@ -26,7 +20,7 @@ def get_session_history(session_id: str) -> InMemoryChatMessageHistory:
         _store[session_id]= InMemoryChatMessageHistory()
     return _store[session_id]
 
-@cl.auther_rename
+@cl.author_rename
 def rename(orig_author: str):
     rename_dict = {"Chatbot": "Diyorbek AI","Assistant":"Diyorbek AI"}
     return rename_dict.get(orig_author,orig_author)
@@ -59,7 +53,7 @@ async def start():
     agent_runnable = create_tool_calling_agent(
         llm=llm, tools=tools,prompt=prompt,
     )
-    agent = AgentExecuter(agent=agent_runnable,tools=tools,verbose=True)
+    agent = AgentExecutor(agent=agent_runnable,tools=tools,verbose=True)
     agent_with_memory = RunnableWithMessageHistory(
         agent,
         get_session_history,
