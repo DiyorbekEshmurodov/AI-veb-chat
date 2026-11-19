@@ -14,3 +14,17 @@ def get_connection():
     )
 
     return connection
+
+if __name__ == "__main__":
+    try:
+        with get_connection() as conn:
+            print("Connection is activate with PosterSql!")
+
+            result = conn.execute(
+                "SELECT current_database();"
+            )
+
+            print("Connection DB: ", result.fetchone()[0])
+
+    except Exception as error:
+        print("DB error: ", error)
