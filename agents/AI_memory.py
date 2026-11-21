@@ -104,7 +104,7 @@ def get_chat_history(user_id, conversation_id):
 # Sinov
 if __name__ == "__main__":
 
-    USER_ID = "Diyor"
+    USER_ID = "Diyorbek"
 
     # 1. Yangi suhbat yaratamiz
     conversation_id = create_conversation(

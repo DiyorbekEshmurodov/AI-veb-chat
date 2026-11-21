@@ -8,6 +8,8 @@ from langchain_core.prompts import ChatPromptTemplate ,MessagesPlaceholder
 from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_core.tools import tool
 from langchain_groq import ChatGroq
+
+from AI_memory import create_conversation
 # import nest_asyncio
 
 load_dotenv()
@@ -27,10 +29,20 @@ def rename(orig_author: str):
 
 @cl.on_chat_start
 async def start():
+    user_id = "Diyorbek"
+
+    conversation_id = create_conversation(
+        user_id,
+        "Yangi suhbat"
+    )
+    cl.user_session.set('user_id',user_id)
+    cl.user_session.set('conversation_id',conversation_id)
+
+    print("Yangi suhbat yaratildi:",conversation_id)
+
     await cl.Message(
         content="Salom! Meni Diyorbek tominidan yaratilgan AI Assistant"
     ).send()
-
     llm = ChatGroq(model_name="openai/gpt-oss-120b", temperature=0)
     search_tools = DuckDuckGoSearchRun()
 
